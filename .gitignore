@@ -1,0 +1,16 @@
+# Carpetas de compilación y salida de NetBeans
+/build/
+/dist/
+
+# Configuración privada específica de NetBeans para cada usuario
+/nbproject/private/
+/nbproject/build-impl.xml
+/nbproject/project.properties
+
+# Archivos de caché o temporales del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos Adicionales
+Considereciones.txt
+/respaldos/
