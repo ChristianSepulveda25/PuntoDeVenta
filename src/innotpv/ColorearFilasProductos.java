@@ -20,7 +20,7 @@ public class ColorearFilasProductos extends DefaultTableCellRenderer {
         
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         
-        String estatus = (String) table.getValueAt(row, 12);
+        String estatus = (String) table.getValueAt(row, 13);
         
         // Cambiar el color de fondo de la fila según el estatus
         if ("Inactivo".equals(estatus)) {

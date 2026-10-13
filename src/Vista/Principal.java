@@ -77,6 +77,7 @@ public class Principal extends javax.swing.JFrame {
     public TotalesPorFechaV tpfv;
     public CambiarContrasenaV ccov;
     public PermisosEspecialesV pev;
+    public PreciosPorcentajesV ppv;
     public String usuarioLogeado;
     public String nombreLogeado;
     /**
@@ -190,6 +191,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem24 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem18 = new javax.swing.JMenuItem();
         jMenuItem23 = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem10 = new javax.swing.JMenuItem();
@@ -508,6 +510,17 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenuItem3);
+
+        jMenuItem18.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        jMenuItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Vineta.png"))); // NOI18N
+        jMenuItem18.setText("Precios Porcentajes");
+        jMenuItem18.setMargin(new java.awt.Insets(5, 0, 5, 0));
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem18ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem18);
 
         jMenuItem23.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         jMenuItem23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Vineta.png"))); // NOI18N
@@ -1215,6 +1228,23 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
+        // TODO add your handling code here:
+        PreciosPorcentajesM ppm = new PreciosPorcentajesM();
+        if(estacerrado(ppv)){
+            ppv = new PreciosPorcentajesV();
+            inicio.add(ppv);
+            PreciosPorcentajesC ppc = new PreciosPorcentajesC(ppm, ppv);
+            Dimension desktopSize = inicio.getSize();
+            Dimension FrameSize = ppv.getSize();
+            ppv.setLocation((desktopSize.width - FrameSize.width)/2, (desktopSize.height - FrameSize.height)/2);
+            ppv.show();
+            ppc.iniciar();
+        }else{
+            JOptionPane.showMessageDialog(this, "La ventana ya se encuentra abierta!!!");
+        }
+    }//GEN-LAST:event_jMenuItem18ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1326,6 +1356,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem23;

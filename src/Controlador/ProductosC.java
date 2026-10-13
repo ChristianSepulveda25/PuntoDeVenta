@@ -48,10 +48,15 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
     private final InventarioM im = new InventarioM();
     private final MovimientosAlmacenM mam = new MovimientosAlmacenM();
     private final EntradasSalidasPExpressM espem = new EntradasSalidasPExpressM();
+    private final PreciosPorcentajesM ppm = new PreciosPorcentajesM();
     DefaultTableCellRenderer centrar = new DefaultTableCellRenderer();
     public int fila_s = 0;
     ColorearFilasProductos colorearFilas = new ColorearFilasProductos();
     TableRowSorter<TableModel> sorter;
+    public double costoAnterior = 0.0;
+    public double precioAnterior = 0.0;
+    public double mayoreoAnterior = 0.0;
+    public double menudeoAnterior = 0.0;
 
     public ProductosC(ProductosM pm, ProductosV pv) {
         this.pm = pm;
@@ -65,6 +70,7 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
         // this.pv.cmbmedidas.addActionListener(this);
         this.pv.txtbus.addKeyListener(this);
         this.pv.txtcodigo.addKeyListener(this);
+        this.pv.txtcosto.addKeyListener(this);
         this.pv.btnEntradas.addActionListener(this);
         this.pv.btnSalidas.addActionListener(this);
         this.pv.btnSalirEntSal.addActionListener(this);
@@ -245,6 +251,96 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
                 if(existe == 1){
                     JOptionPane.showMessageDialog(pv, "El Código Ya Se Encuentra Registrado.");
                 }else{
+                    
+                    // Valida costo anterior
+                    Double costoActual = Double.parseDouble(pv.txtcosto.getText());
+                    if(costoActual < costoAnterior){
+                        Object[] opciones = {"Confirmar", "No"};
+
+                        int respuesta = JOptionPane.showOptionDialog(
+                            pv, 
+                            "EL Costo Anterior es MAYOR al Costo Actual, ¿Desea Continuar?", 
+                            "Confirmación", 
+                            JOptionPane.DEFAULT_OPTION, 
+                            JOptionPane.QUESTION_MESSAGE, 
+                            null, 
+                            opciones, 
+                            opciones[0] // Establecer "Confirmar" como opción predeterminada
+                        );
+
+                        if (respuesta != 0) {
+                            return;
+                        }
+                    }
+                    
+                    // Valida precio anterior
+                    Double precioActual = Double.parseDouble(pv.txtpre.getText());
+                    if(precioActual < precioAnterior){
+                        Object[] opciones1 = {"Confirmar", "No"};
+
+                        int respuesta1 = JOptionPane.showOptionDialog(
+                            pv, 
+                            "EL Precio Anterior es MAYOR al Precio Actual, ¿Desea Continuar?", 
+                            "Confirmación", 
+                            JOptionPane.DEFAULT_OPTION, 
+                            JOptionPane.QUESTION_MESSAGE, 
+                            null, 
+                            opciones1, 
+                            opciones1[0] // Establecer "Confirmar" como opción predeterminada
+                        );
+
+                        if (respuesta1 != 0) {
+                            return;
+                        }else{
+
+                        }
+                    }
+                    
+                    // Valida mayoreo anterior
+                    Double mayoreoActual = Double.parseDouble(pv.txtmayoreo.getText());
+                    if(mayoreoActual < mayoreoAnterior){
+                        Object[] opciones2 = {"Confirmar", "No"};
+
+                        int respuesta2 = JOptionPane.showOptionDialog(
+                            pv, 
+                            "EL Mayoreo Anterior es MAYOR al Mayoreo Actual, ¿Desea Continuar?", 
+                            "Confirmación", 
+                            JOptionPane.DEFAULT_OPTION, 
+                            JOptionPane.QUESTION_MESSAGE, 
+                            null, 
+                            opciones2, 
+                            opciones2[0] // Establecer "Confirmar" como opción predeterminada
+                        );
+
+                        if (respuesta2 != 0) {
+                            return;
+                        }else{
+
+                        }
+                    }
+                    
+                    // Valida menudeo anterior
+                    Double menudeoActual = Double.parseDouble(pv.txtmenudeo.getText());
+                    if(menudeoActual < menudeoAnterior){
+                        Object[] opciones3 = {"Confirmar", "No"};
+
+                        int respuesta3 = JOptionPane.showOptionDialog(
+                            pv, 
+                            "EL Menudeo Anterior es MAYOR al Menudeo Actual, ¿Desea Continuar?", 
+                            "Confirmación", 
+                            JOptionPane.DEFAULT_OPTION, 
+                            JOptionPane.QUESTION_MESSAGE, 
+                            null, 
+                            opciones3, 
+                            opciones3[0] // Establecer "Confirmar" como opción predeterminada
+                        );
+
+                        if (respuesta3 != 0) {
+                            return;
+                        }
+                    }
+                    
+                    
                     int gua = 0;
                     gua = GuardarProductos();
                     if(gua == 0){
@@ -262,6 +358,7 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
                             // pv.txtcosto.setText("0");
                             pv.txtmayoreo.setText("0");
                             pv.txtmenudeo.setText("0");
+                            pv.txtcosto.setText("0");
                             pv.txtcantidadtipo.setText("1");
                             JOptionPane.showMessageDialog(pv, "Registro Guardado");
                         }else{
@@ -291,16 +388,22 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
                 pv.txtsa.setText(pv.tbllis.getValueAt(fila_s, 3).toString());
                 pv.txtsm.setText(pv.tbllis.getValueAt(fila_s, 4).toString());
                 pv.txtsx.setText(pv.tbllis.getValueAt(fila_s, 5).toString());
-                pv.txtpre.setText(pv.tbllis.getValueAt(fila_s, 6).toString());
-                pv.txtmayoreo.setText(pv.tbllis.getValueAt(fila_s, 7).toString());
-                pv.txtmenudeo.setText(pv.tbllis.getValueAt(fila_s, 8).toString());
-                pv.cmbtipo.setSelectedItem(pv.tbllis.getValueAt(fila_s, 9).toString());
-                pv.txtcantidadtipo.setText(pv.tbllis.getValueAt(fila_s, 10).toString());
+                pv.txtcosto.setText(pv.tbllis.getValueAt(fila_s, 6).toString());
+                pv.txtpre.setText(pv.tbllis.getValueAt(fila_s, 7).toString());
+                pv.txtmayoreo.setText(pv.tbllis.getValueAt(fila_s, 8).toString());
+                pv.txtmenudeo.setText(pv.tbllis.getValueAt(fila_s, 9).toString());
+                pv.cmbtipo.setSelectedItem(pv.tbllis.getValueAt(fila_s, 10).toString());
+                pv.txtcantidadtipo.setText(pv.tbllis.getValueAt(fila_s, 11).toString());
                 // pv.txtcosto.setText(pv.tbllis.getValueAt(fila_s, 7).toString());
-                pv.cmbcat.setSelectedItem(pv.tbllis.getValueAt(fila_s, 11).toString());
+                pv.cmbcat.setSelectedItem(pv.tbllis.getValueAt(fila_s, 12).toString());
                 
-                pv.cmbest.setSelectedItem(pv.tbllis.getValueAt(fila_s, 12).toString());
+                pv.cmbest.setSelectedItem(pv.tbllis.getValueAt(fila_s, 13).toString());
                 pv.txtsa.setEnabled(false);
+                
+                costoAnterior = Double.parseDouble(pv.tbllis.getValueAt(fila_s, 6).toString());
+                precioAnterior = Double.parseDouble(pv.tbllis.getValueAt(fila_s, 7).toString());
+                mayoreoAnterior = Double.parseDouble(pv.tbllis.getValueAt(fila_s, 8).toString());
+                menudeoAnterior = Double.parseDouble(pv.tbllis.getValueAt(fila_s, 9).toString());
                 
             }
         }else if(e.getSource() == pv.btnsal){
@@ -327,6 +430,10 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
                 cerrarModal(pv.dEntradasSalidas);
             }else if( e.getKeyCode() == KeyEvent.VK_ENTER ){
                 GuardarMovimiento();
+            }
+        }else if( e.getSource() == pv.txtcosto ){
+            if( e.getKeyCode() == KeyEvent.VK_ENTER ){
+                CalcularPrecios();
             }
         }
     }
@@ -425,6 +532,7 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
         pv.txtmenudeo.setEnabled(false);
         pv.cmbtipo.setEnabled(false);
         pv.txtcantidadtipo.setEnabled(false);
+        pv.txtcosto.setEnabled(false);
         // pv.cmbmedidas.setEnabled(false);
         pv.cmbcat.setEnabled(false);
         pv.cmbest.setEnabled(false);
@@ -437,6 +545,7 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
         pv.txtpre.setText("0");
         pv.txtmayoreo.setText("0");
         pv.txtmenudeo.setText("0");
+        pv.txtcosto.setText("0");
         pv.cmbtipo.setSelectedIndex(0);
         pv.txtcantidadtipo.setText("1");
         // pv.cmbmedidas.removeAllItems();
@@ -461,6 +570,7 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
         pv.txtpre.setEnabled(true);
         pv.txtmayoreo.setEnabled(true);
         pv.txtmenudeo.setEnabled(true);
+        pv.txtcosto.setEnabled(true);
         pv.cmbtipo.setSelectedIndex(0);
         pv.cmbtipo.setEnabled(true);
         pv.txtcantidadtipo.setEnabled(true);
@@ -562,6 +672,8 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
         menudeo = Double.parseDouble(pv.txtmenudeo.getText().toString());
         tipo = pv.cmbtipo.getSelectedItem().toString();
         cantidadTipo = Integer.parseInt(pv.txtcantidadtipo.getText().toString());
+        
+        costo = Double.parseDouble(pv.txtcosto.getText());
         
         pm.setId(id);
         pm.setCod(cod);
@@ -1040,6 +1152,117 @@ public class ProductosC implements ActionListener, KeyListener, ItemListener {
         centrar.setHorizontalAlignment(SwingConstants.CENTER);//.LEFT .RIGHT .CENTER
         pv.tblInventarios.getColumnModel().getColumn(3).setCellRenderer(centrar);
         pv.tblInventarios.getColumnModel().getColumn(4).setCellRenderer(centrar);
+    }
+    
+    public void CalcularPrecios(){
+        int indexCategoria = pv.cmbcat.getSelectedIndex();
+
+        if( indexCategoria == 0 ){
+            JOptionPane.showMessageDialog(pv, "Seleccione una categoría.");
+            return;
+        }
+
+        int categoria;
+        String[] p1;
+        p1 = pv.cmbcat.getSelectedItem().toString().split("'");
+        categoria = Integer.parseInt(p1[1]);
+
+        if (!validarCosto(pv.txtcosto)) return;
+
+        // Obtener el costo con seguridad
+        double costo = Double.parseDouble(pv.txtcosto.getText().trim());
+
+        // Obtener los porcentajes de la base de datos (precio, mayoreo, menudeo)
+        int[] valores = ppm.obtenerPreciosPorCategoria(categoria);
+
+        int porcPrecio = valores[0];
+        int porcMayoreo = valores[1];
+        int porcMenudeo = valores[2];
+
+        // Aplicar cálculo, validación de porcentaje > 0 y regla de redondeo
+        double precioFinal = calcularPrecioConPorcentaje(costo, porcPrecio);
+        if (precioFinal == -1) return; // Se detiene si el porcentaje es <= 0
+
+        double mayoreoFinal = calcularPrecioConPorcentaje(costo, porcMayoreo);
+        if (mayoreoFinal == -1) return;
+
+        double menudeoFinal = calcularPrecioConPorcentaje(costo, porcMenudeo);
+        if (menudeoFinal == -1) return;
+
+        // --- AQUÍ YA PUEDES MOSTRAR LOS RESULTADOS EN TUS CAMPOS O ETIQUETAS ---
+        // Ejemplo:
+        pv.txtpre.setText(String.valueOf(precioFinal));
+        pv.txtmayoreo.setText(String.valueOf(mayoreoFinal));
+        pv.txtmenudeo.setText(String.valueOf(menudeoFinal));
+
+        System.out.println("Precio final: " + precioFinal);
+        System.out.println("Mayoreo final: " + mayoreoFinal);
+        System.out.println("Menudeo final: " + menudeoFinal);
+    }
+    
+    private boolean validarCosto(javax.swing.JTextField campo) {
+        String texto = campo.getText().trim();
+
+        // 1. Verificar si está vacío
+        if (texto.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(pv, 
+                "El campo Costo no puede estar vacío.", 
+                "Error de validación", javax.swing.JOptionPane.ERROR_MESSAGE);
+            campo.requestFocus();
+            return false;
+        }
+
+        try {
+            // 2. Intentar convertir a número (usamos double o float por si el costo maneja decimales, ej: 15.50)
+            double valor = Double.parseDouble(texto);
+
+            // 3. Verificar que sea mayor a cero
+            if (valor <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(pv, 
+                    "El campo Costo debe ser mayor a cero.", 
+                    "Error de validación", javax.swing.JOptionPane.ERROR_MESSAGE);
+                campo.requestFocus();
+                return false;
+            }
+
+        } catch (NumberFormatException e) {
+            // Si el usuario escribe letras o símbolos inválidos
+            javax.swing.JOptionPane.showMessageDialog(pv, 
+                "El campo Costo debe contener un número válido.", 
+                "Error de validación", javax.swing.JOptionPane.ERROR_MESSAGE);
+            campo.requestFocus();
+            return false;
+        }
+
+        return true; // ¡Pasó todas las validaciones!
+    }
+    
+    private double calcularPrecioConPorcentaje(double costo, double porcentaje) {
+        // 1. Validar que el porcentaje sea mayor a cero
+        if (porcentaje <= 0) {
+            javax.swing.JOptionPane.showMessageDialog(pv, 
+                "El porcentaje debe ser mayor a cero.", 
+                "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return -1; // Usamos -1 para indicar que hubo un error y detener el proceso
+        }
+
+        // 2. Aplicar el aumento de porcentaje al costo (ej. Costo 100 + 15% = 115.0)
+        double resultadoConAumento = costo + (costo * (porcentaje / 100.0));
+
+        // 3. Separar la parte entera y la parte decimal
+        int parteEntera = (int) resultadoConAumento;
+        double parteDecimal = resultadoConAumento - parteEntera;
+
+        // 4. Aplicar tu regla de redondeo personalizada
+        // Si la parte decimal es menor o igual a 0.39, baja al entero. Si es >= 0.40, sube.
+        double precioFinal;
+        if (parteDecimal <= 0.39) {
+            precioFinal = parteEntera; // Baja al entero (ej. 30.39 -> 30)
+        } else {
+            precioFinal = parteEntera + 1; // Sube al siguiente entero (ej. 30.40 -> 31)
+        }
+
+        return precioFinal;
     }
     
 }
