@@ -137,6 +137,9 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         };
     TableRowSorter<TableModel> sorter;
     public static final String PERMISO_IMPRIMIR_TICKET = "PREGUNTAR SI IMPRIME TICKET";
+    public int estatusVenta = 1;
+    public String nombreCliente_Pen = "";
+    public String telefonoCliente_Pen = "";
 
     public VentasFrameC(VentasFrameM vm, VentasFrameV vv) {
         this.vm = vm;
@@ -158,6 +161,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         //this.vv.btncobrarsinticket1.addActionListener(this);
         this.vv.btncobrarconticket.addActionListener(this);
         this.vv.btn_reimprimir_ticket.addActionListener(this);
+        this.vv.btncobrarpendiente.addActionListener(this);
         //this.vv.btncobrarconticket1.addActionListener(this);
         //this.vv.rbtnorden.addActionListener(this);
         //this.vv.rbtnorden1.addActionListener(this);
@@ -248,6 +252,14 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         this.vv.btnBuscarCreditos.addActionListener(this);
         this.vv.btnCancelarAbono.addActionListener(this);
         this.vv.btnImprimirAbono.addActionListener(this);
+        this.vv.btnbus_pen.addActionListener(this);
+        this.vv.btnexportar_pen.addActionListener(this);
+        this.vv.btnsalir_pen.addActionListener(this);
+        this.vv.btnconsultar_pen.addActionListener(this);
+        this.vv.btnCompletarVenta_pen.addActionListener(this);
+        this.vv.btncancelar_pen.addActionListener(this);
+        this.vv.cmbFormaPago.addActionListener(this);
+        
         vv.dAbonosCreditos.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
@@ -267,8 +279,12 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         // vv.pesprincipal.setIconAt(2, getClass().getResource("/img/CancelarVenta.png"));
         ImageIcon iconTab2 = new ImageIcon(getClass().getResource("/img/cancelaciones.png"));
         vv.pesprincipal.setIconAt(2, iconTab2);
+        
         ImageIcon iconTabCreditos = new ImageIcon(getClass().getResource("/img/tarjeta.png"));
         vv.pesprincipal.setIconAt(4, iconTabCreditos);
+        
+        ImageIcon iconTabPendientes = new ImageIcon(getClass().getResource("/img/regoistro_personal.png"));
+        vv.pesprincipal.setIconAt(5, iconTabPendientes);
         // vv.pesprincipal.setIconAt(1, new ImageIcon("src/img/CancelarVenta.png"));getClass().getResource("/img/CancelarVenta.png")
         // vv.pesprincipal.setIconAt(2, new ImageIcon("src/img/CancelarVenta.png"));
         // vv.pesAplicarDescuento.setIconAt(0, new ImageIcon("src/img/promociones.png"));
@@ -317,6 +333,12 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         vv.pesAplicarDescuento.setIconAt(0, new ImageIcon("src/img/promociones.png"));
         vv.pesAplicarDescuento.setIconAt(1, new ImageIcon("src/img/regoistro_personal.png"));*/
         java.util.Date tuFecha = new java.util.Date();
+        java.util.Date primerDiaAnio = java.util.Date.from(
+            java.time.LocalDate.now()
+                .withDayOfYear(1)
+                .atStartOfDay(java.time.ZoneId.systemDefault())
+                .toInstant()
+        );
         vv.fechaDe.setDate(tuFecha);
         vv.fechaAl.setDate(tuFecha);
         vv.fechaDeDetalle.setDate(tuFecha);
@@ -325,6 +347,8 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         vv.fechaAlCxC.setDate(tuFecha);
         vv.fechaDeCreditos.setDate(tuFecha);
         vv.fechaAlCreditos.setDate(tuFecha);
+        vv.fechaDe_pen.setDate(primerDiaAnio);
+        vv.fechaAl_pen.setDate(tuFecha);
         JTextFieldDateEditor dateEditor_de = (JTextFieldDateEditor)vv.fechaDe.getDateEditor();
         dateEditor_de.setHorizontalAlignment(JTextField.CENTER);
         dateEditor_de.setEnabled(false);
@@ -352,6 +376,13 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         JTextFieldDateEditor fechaAlCreditos = (JTextFieldDateEditor)vv.fechaAlCreditos.getDateEditor();
         fechaAlCreditos.setHorizontalAlignment(JTextField.CENTER);
         fechaAlCreditos.setEnabled(false);
+        // Pendientes
+        JTextFieldDateEditor fechaDePendientes = (JTextFieldDateEditor)vv.fechaDe_pen.getDateEditor();
+        fechaDePendientes.setHorizontalAlignment(JTextField.CENTER);
+        fechaDePendientes.setEnabled(false);
+        JTextFieldDateEditor fechaAlPendientes = (JTextFieldDateEditor)vv.fechaAl_pen.getDateEditor();
+        fechaAlPendientes.setHorizontalAlignment(JTextField.CENTER);
+        fechaAlPendientes.setEnabled(false);
         
         vv.txt_idVenta_AC.setVisible(false);
         vv.txt_idCliente_AC.setVisible(false);
@@ -463,7 +494,87 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if( e.getSource() == vv.btnImprimirAbono ){
+        if( e.getSource() == vv.btnCompletarVenta_pen ){
+            int fila = 0;
+            fila = vv.tbllis_pen.getSelectedRow();
+            if(fila < 0){
+                JOptionPane.showMessageDialog(vv, "Selecione un Registro");
+            }else{
+                // Crear un arreglo de botones personalizados
+                Object[] opciones = {"Confirmar", "No"};
+
+                // Mostrar el mensaje de confirmación con los botones personalizados
+                int respuesta = JOptionPane.showOptionDialog(
+                    vv, 
+                    "¿Completar venta pendiente?", 
+                    "Confirmación", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.QUESTION_MESSAGE, 
+                    null, 
+                    opciones, 
+                    opciones[0] // Establecer "Confirmar" como opción predeterminada
+                );
+
+                // Procesar la respuesta
+                if (respuesta == 0) {
+                    int res = 0;
+                    res = CompletarVentaPendiente(fila);
+                    if(res == 1){
+                        CargarVentasPendientes();
+                        JOptionPane.showMessageDialog(vv, "Venta Pendiente Completada");
+                    }else{
+                        JOptionPane.showMessageDialog(vv, "Error al Cancelar Venta, Contacte a Soporte Técnio");
+                    }
+                }
+            }
+        }else if( e.getSource() == vv.btncancelar_pen ){
+            int fila = 0;
+            fila = vv.tbllis_pen.getSelectedRow();
+            if(fila < 0){
+                JOptionPane.showMessageDialog(vv, "Selecione un Registro");
+            }else{
+                String estatus = null;
+                estatus = vv.tbllis_pen.getValueAt(fila, 7).toString();
+                if(estatus.equals("Cancelada")){
+                    JOptionPane.showMessageDialog(vv, "La venta ya fue cancelada!!!");
+                }else{
+                    Object[] options = {"Si", "No"};
+                    int resGuardar = JOptionPane.showOptionDialog(null, "Desea cancelar la venta pendiente?", "Guardar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null, options, options[0]);
+                    if( resGuardar == 0 ){
+                        int a = 0;
+                        a = ActualizarEstatus_PEN(fila);
+                        if(a == 0){
+                            JOptionPane.showMessageDialog(vv, "Error al Cancelar Venta, Contacte a Soporte Técnio");
+                        }else{
+                            RegresarStockVenta_PEN(fila);
+                            CargarVentasPendientes();
+                            JOptionPane.showMessageDialog(vv, "Venta Pendiente Cancelada");
+                        }
+                    }
+                }
+            }
+        }else if( e.getSource() == vv.btnbus_pen ){
+            CargarVentasPendientes();
+        }else if( e.getSource() == vv.btnexportar_pen ){
+            int filas = vv.tbllis_pen.getRowCount();
+            if( filas > 0 ){
+                ExportarExcel obj;
+                try {
+                    obj = new ExportarExcel();
+                    obj.exportarExcel(vv.tbllis_pen);
+                }catch(IOException ex) {
+                    System.out.println("Error: " + ex);
+                }
+            }else{
+                JOptionPane.showMessageDialog(vv, "No tienes datos para exportar");
+            }
+        }else if( e.getSource() == vv.btnsalir_pen ){
+            vv.dispose();
+            String args[] = null;
+            Principal.main(args);
+        }else if( e.getSource() == vv.btnconsultar_pen ){
+                CargarModalDetalleVenta_Pen();
+        }else if( e.getSource() == vv.btnImprimirAbono ){
             int fila = vv.tbllisCreditosMovimientos.getSelectedRow();
             if( fila < 0 ){
                 JOptionPane.showMessageDialog(vv, "Seleccione un movimiento");
@@ -1095,6 +1206,12 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
             if(filas <= 0){
                 vv.txtbus.requestFocus();
             }else{
+                int fPago = 0;
+                fPago = vv.cmbFormaPago.getSelectedIndex();
+                // Justo antes de mostrar el resumen o abrir la ventana de cobro: 
+                // String.valueOf(totalConDescuentosAplicados)
+                double totalConDescuentosAplicados = calcularTotalConDescuento(fPago);
+                
                 BuscarClientesCredito();
                 vv.pnlcajarapida.setVisible(false);
                 vv.pnlcobro.setVisible(true);
@@ -1104,27 +1221,27 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                 //Obtener Subtotal y Total
                 String[] partSubTot;
                 partSubTot = vv.lbltot.getText().split(" ");
-                vv.txtsubtotal.setText(partSubTot[1]);
-                vv.txttotal.setText(partSubTot[1]);
+                vv.txtsubtotal.setText(String.valueOf(totalConDescuentosAplicados)); //partSubTot[1]
+                vv.txttotal.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
                 vv.txtsubtotal.setEnabled(false);
                 vv.txttotal.setEnabled(false);
                 //Descuento
                 vv.txtdescuento.setText("0");
                 //Paga Con
-                vv.txtpago.setText(partSubTot[1]);
+                vv.txtpago.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
                 //Cambio
                 vv.txtcambio.setText("0");
                 vv.txtcambio.setEnabled(false);
                     
                 //Obtener Subtotal y Total en btn cobrar crédito
-                vv.txtsubtotalCredito.setText(partSubTot[1]);
-                vv.txttotalCredito.setText(partSubTot[1]);
+                vv.txtsubtotalCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+                vv.txttotalCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
                 vv.txtsubtotalCredito.setEnabled(false);
                 vv.txttotalCredito.setEnabled(false);
                 //Descuento
                 vv.txtdescuentoCredito.setText("0");
                 //Paga Con
-                vv.txtpagoCredito.setText(partSubTot[1]);
+                vv.txtpagoCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
                 //Cambio
                 vv.txtcambioCredito.setText("0");
                 
@@ -1215,6 +1332,162 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                     }
                 }
             }
+        }else if(e.getSource() == vv.btncobrarpendiente){// Cobrar en Efectivo y Ticket
+            // 1. Validar primero que el nombre y el teléfono no estén vacíos antes de cobrar
+            javax.swing.JTextField txtNombreCliente = new javax.swing.JTextField(20);
+            javax.swing.JTextField txtTelefonoCliente = new javax.swing.JTextField(15);
+
+            javax.swing.JPanel panelCliente = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
+            panelCliente.add(new javax.swing.JLabel("Nombre del cliente (Obligatorio):"));
+            panelCliente.add(txtNombreCliente);
+            panelCliente.add(new javax.swing.JLabel("Teléfono (Obligatorio):"));
+            panelCliente.add(txtTelefonoCliente);
+
+            // 2. Definir los textos personalizados para los botones
+            Object[] opciones = {"Guardar", "Cancelar"};
+
+            // 3. Usar showOptionDialog para controlar los textos y la opción predeterminada
+            int resultadoCliente = JOptionPane.showOptionDialog(
+                vv, 
+                panelCliente, 
+                "Datos del Cliente", 
+                JOptionPane.YES_NO_OPTION, // Opciones estándar sí/no para mapear a los botones
+                JOptionPane.PLAIN_MESSAGE, 
+                null, 
+                opciones,       // Arreglo con tus textos personalizados
+                opciones[0]     // Botón predeterminado ("Guardar")
+            );
+
+            // Si cancela o cierra la ventana, detenemos el proceso
+            if (resultadoCliente != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            String nombreCliente = txtNombreCliente.getText().trim();
+            String telefonoCliente = txtTelefonoCliente.getText().trim();
+
+            if (nombreCliente.isEmpty() || telefonoCliente.isEmpty()) {
+                JOptionPane.showMessageDialog(vv, "El nombre y el teléfono son obligatorios para completar la venta.", "Error de validación", JOptionPane.WARNING_MESSAGE);
+                return; // Detiene el proceso si están vacíos
+            }
+
+            // 2. Tu lógica original de validación de pago y guardado
+            estatusVenta = 2;
+            double total = 0;
+            double pago = 0;
+            total = Double.parseDouble(vv.txttotal.getText());
+
+            if(vv.txtpago.getText().isEmpty()){
+                pago = 0;
+            }else{
+                pago = Double.parseDouble(vv.txtpago.getText());
+            }
+
+            if(pago < total){
+                JOptionPane.showMessageDialog(vv, "Introducir una cantidad en el Campo \"Pago\"\nIgual o Mayor al Total");
+            }else{
+                int guaVen = 0;
+
+                // NOTA: Asegúrate de pasar 'nombreCliente' y 'telefonoCliente' a tu método GuardarVenta() 
+                // o guardarlos en variables globales de tu clase para usarlos al registrar en la BD.
+                
+                nombreCliente_Pen = nombreCliente; // nombreCliente;
+                telefonoCliente_Pen = telefonoCliente; // telefonoCliente;
+                
+                guaVen = GuardarVenta(); // Si tu método acepta parámetros, puedes poner: GuardarVenta(nombreCliente, telefonoCliente);
+
+                if(guaVen <= 0){
+                    JOptionPane.showMessageDialog(vv, "Error al Guardar la venta, Contacte a Soporte Técnico!!!");
+                }else{
+                    int guaDet = 0;
+                    guaDet = GuardarDetalleVenta();
+                    if(guaDet > 0){
+                        JOptionPane.showMessageDialog(vv, "Error al Guardar los Productos de la Venta, Contacte a Soporte Técnico");
+                    }else{
+                        // ACTUALIZAR ESTATUS COTIZACION
+                        String nombreCotizacion = null;
+                        nombreCotizacion = vv.txtNombreCotView.getText();
+
+                        if( !nombreCotizacion.equals("")){
+                            FinalizaListaCot(nombreCotizacion);
+                        }
+
+                        int permiso = pesm.obtenerPermisoEspecial(PERMISO_IMPRIMIR_TICKET);
+                        if( permiso == 0 ){
+                            FinalizarVenta(1);
+                        }else{
+                            vv.dConfirmarCobro.setSize(292, 105);
+                            vv.dConfirmarCobro.setModal(true);
+                            vv.dConfirmarCobro.setLocationRelativeTo(vv);
+                            vv.dConfirmarCobro.setResizable(false);
+                            vv.dConfirmarCobro.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                            vv.dConfirmarCobro.setTitle("Imprimir Ticket");
+                            ImageIcon icon = new ImageIcon("src/img/pagos.png"); 
+                            vv.dConfirmarCobro.setIconImage(icon.getImage());
+                            vv.dConfirmarCobro.setVisible(true);
+                            vv.btnSiImprimirTicket.requestFocus();
+                        }
+                    }
+                }
+            }
+            estatusVenta = 1;
+            
+            nombreCliente_Pen = "";
+            telefonoCliente_Pen = "";
+            
+            /* COMENTADO
+            
+            estatusVenta = 2;
+            double total = 0;
+            double pago = 0;
+            total = Double.parseDouble(vv.txttotal.getText());
+            if(vv.txtpago.getText().isEmpty()){
+                pago = 0;
+            }else{
+                pago = Double.parseDouble(vv.txtpago.getText());
+            }
+            if(pago < total){
+                JOptionPane.showMessageDialog(vv, "Introducir una cantidad en el Campo \"Pago\"\nIgual o Mayor al Total");
+            }else{
+                int guaVen=0;
+                guaVen = GuardarVenta();
+                if(guaVen <= 0){
+                    JOptionPane.showMessageDialog(vv, "Error al Guarar la venta, Contacte a Soporte Técnico!!!");
+                }else{
+                    int guaDet = 0;
+                    guaDet = GuardarDetalleVenta();
+                    if(guaDet > 0){
+                        JOptionPane.showMessageDialog(vv, "Error al Guardar los Productos de la Venta, Contacte a Soporte Técnico");
+                    }else{
+                        // ACTUALIZAR ESTATUS COTIZACION
+                        String nombreCotizacion = null;
+                        nombreCotizacion = vv.txtNombreCotView.getText();
+                        
+                        if( !nombreCotizacion.equals("")){
+                            FinalizaListaCot(nombreCotizacion);
+                        }
+                        
+                        int permiso = pesm.obtenerPermisoEspecial(PERMISO_IMPRIMIR_TICKET);
+                        // System.out.println("Permiso: " + permiso);
+                        if( permiso == 0 ){
+                            FinalizarVenta(1);
+                        }else{
+                            vv.dConfirmarCobro.setSize(292, 105);
+                            vv.dConfirmarCobro.setModal(true);
+                            vv.dConfirmarCobro.setLocationRelativeTo(vv);
+                            // Deshabilitar el botón de maximizar
+                            vv.dConfirmarCobro.setResizable(false);
+                            vv.dConfirmarCobro.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                            vv.dConfirmarCobro.setTitle("Imprimir Ticket");
+                            ImageIcon icon = new ImageIcon("src/img/pagos.png"); // Asegúrate de que la imagen esté en la ruta correcta
+                            vv.dConfirmarCobro.setIconImage(icon.getImage());
+                            vv.dConfirmarCobro.setVisible(true);
+                            vv.btnSiImprimirTicket.requestFocus();
+                        }
+                    }
+                }
+            }
+            estatusVenta = 1;*/
         }else if(e.getSource() == vv.btnCobrarCredito){// Cobrar en Efectivo y Ticket
             double total = 0;
             double pago = 0;
@@ -1443,6 +1716,32 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
             }
         }else if(e.getSource() == vv.btnEntSalEfectivo){
             abrirModalEntradasSalidasEfe();
+        }else if(e.getSource()== vv.cmbFormaPago){
+            int fPago = 0;
+            fPago = vv.cmbFormaPago.getSelectedIndex();
+            // Justo antes de mostrar el resumen o abrir la ventana de cobro: 
+            // String.valueOf(totalConDescuentosAplicados)
+            double totalConDescuentosAplicados = calcularTotalConDescuento(fPago);
+
+            vv.txtsubtotal.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+            vv.txttotal.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+            //Descuento
+            vv.txtdescuento.setText("0");
+            //Paga Con
+            vv.txtpago.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+            //Cambio
+            vv.txtcambio.setText("0");
+
+            //Obtener Subtotal y Total en btn cobrar crédito
+            vv.txtsubtotalCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+            vv.txttotalCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+            //Descuento
+            vv.txtdescuentoCredito.setText("0");
+            //Paga Con
+            vv.txtpagoCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+            //Cambio
+            vv.txtcambioCredito.setText("0");
+            vv.txtpago.requestFocus();
         }
     }
 
@@ -1591,7 +1890,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                                 if( Double.parseDouble(datosBD[2]) < 0){
                                     JOptionPane.showMessageDialog(vv, "<html>El producto <b>" + datosBD[3] + "</b> no cuenta con stock.</html>");
                                 }
-                                modeltLis.addRow(new Object[]{datosBD[0],vv.txtbus.getText(),datosBD[3],datosBD[1],1,""});
+                                modeltLis.addRow(new Object[]{datosBD[0],vv.txtbus.getText(),datosBD[3],datosBD[1],1,"",datosBD[4]});
                                 vv.txtbus.setText("");
                             }
                         }else{
@@ -1643,7 +1942,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                                 if( Double.parseDouble(datosBD[2]) < Double.parseDouble(partPro1[0])){
                                     JOptionPane.showMessageDialog(vv, "<html>El producto <b>" + datosBD[3] + "</b> no cuenta con stock.</html>");
                                 }
-                                modeltLis.addRow(new Object[]{datosBD[0],partPro1[1],datosBD[3],datosBD[1],partPro1[0],""});
+                                modeltLis.addRow(new Object[]{datosBD[0],partPro1[1],datosBD[3],datosBD[1],partPro1[0],"",datosBD[4]});
                                 vv.txtbus.setText("");
                             }
                         }else{
@@ -1688,7 +1987,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                             if( Double.parseDouble(datosBD[2]) < 0){
                                 JOptionPane.showMessageDialog(vv, "<html>El producto <b>" + datosBD[3] + "</b> no cuenta con stock.</html>");
                             }
-                            modeltLis.addRow(new Object[]{datosBD[0],partPro[1],datosBD[3],datosBD[1],1,""});
+                            modeltLis.addRow(new Object[]{datosBD[0],partPro[1],datosBD[3],datosBD[1],1,"",datosBD[4]});
                         }
                     }else{
                         String datos = null;
@@ -1738,6 +2037,12 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                 if(filas <= 0){
                     vv.txtbus.requestFocus();
                 }else{
+                    int fPago = 0;
+                    fPago = vv.cmbFormaPago.getSelectedIndex();
+                    // Justo antes de mostrar el resumen o abrir la ventana de cobro: 
+                    // String.valueOf(totalConDescuentosAplicados)
+                    double totalConDescuentosAplicados = calcularTotalConDescuento(fPago);
+                    
                     BuscarClientesCredito();
                     vv.pnlcajarapida.setVisible(false);
                     vv.pnlcobro.setVisible(true);
@@ -1746,27 +2051,27 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                     //Obtener Subtotal y Total en btn cobrar contado
                     String[] partSubTot;
                     partSubTot = vv.lbltot.getText().split(" ");
-                    vv.txtsubtotal.setText(partSubTot[1]);
-                    vv.txttotal.setText(partSubTot[1]);
+                    vv.txtsubtotal.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+                    vv.txttotal.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
                     vv.txtsubtotal.setEnabled(false);
                     vv.txttotal.setEnabled(false);
                     //Descuento
                     vv.txtdescuento.setText("0");
                     //Paga Con
-                    vv.txtpago.setText(partSubTot[1]);
+                    vv.txtpago.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
                     //Cambio
                     vv.txtcambio.setText("0");
                     vv.txtcambio.setEnabled(false);
                     
                     //Obtener Subtotal y Total en btn cobrar crédito
-                    vv.txtsubtotalCredito.setText(partSubTot[1]);
-                    vv.txttotalCredito.setText(partSubTot[1]);
+                    vv.txtsubtotalCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
+                    vv.txttotalCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
                     vv.txtsubtotalCredito.setEnabled(false);
                     vv.txttotalCredito.setEnabled(false);
                     //Descuento
                     vv.txtdescuentoCredito.setText("0");
                     //Paga Con
-                    vv.txtpagoCredito.setText(partSubTot[1]);
+                    vv.txtpagoCredito.setText(String.valueOf(totalConDescuentosAplicados)); // partSubTot[1]
                     //Cambio
                     vv.txtcambioCredito.setText("0");
                     
@@ -2329,6 +2634,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         modeltLis.addColumn("Precio");//// 3
         modeltLis.addColumn("Cantidad");// 4
         modeltLis.addColumn("Subtotal");// 5
+        modeltLis.addColumn("Id Cat");// 5
         vv.tbllis.setModel(modeltLis);
         vv.tbllis.getColumnModel().getColumn(0).setMaxWidth(0);
         vv.tbllis.getColumnModel().getColumn(0).setMinWidth(0);
@@ -2345,6 +2651,9 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         vv.tbllis.getColumnModel().getColumn(5).setMaxWidth(100);
         vv.tbllis.getColumnModel().getColumn(5).setMinWidth(100);
         vv.tbllis.getColumnModel().getColumn(5).setPreferredWidth(100);
+        vv.tbllis.getColumnModel().getColumn(6).setMaxWidth(0);
+        vv.tbllis.getColumnModel().getColumn(6).setMinWidth(0);
+        vv.tbllis.getColumnModel().getColumn(6).setPreferredWidth(0);
     }
     
     public String CargarProducto(String cod){
@@ -2368,7 +2677,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
             return "NO";
         }
         
-        return modelt.getValueAt(0, 0).toString() + "_" + modelt.getValueAt(0, 6).toString() + "_" + modelt.getValueAt(0, 3).toString() + "_" + modelt.getValueAt(0, 2).toString();
+        return modelt.getValueAt(0, 0).toString() + "_" + modelt.getValueAt(0, 6).toString() + "_" + modelt.getValueAt(0, 3).toString() + "_" + modelt.getValueAt(0, 2).toString() + "_" + modelt.getValueAt(0, 9).toString();
         
     }
     
@@ -2473,6 +2782,17 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         Ticket.AddSubCabecera(Ticket.DarEspacio());
         Ticket.AddSubCabecera(Ticket.DibujarLinea(29));
         Ticket.AddSubCabecera(Ticket.DarEspacio());
+        
+        if( !nombreCliente_Pen.equals("") && !telefonoCliente_Pen.equals("") ){
+            Ticket.AddSubCabecera("VENTA PENDIENTE");
+            Ticket.AddSubCabecera(Ticket.DarEspacio());
+            Ticket.AddSubCabecera("Cliente: "+nombreCliente_Pen);
+            Ticket.AddSubCabecera(Ticket.DarEspacio());
+            Ticket.AddSubCabecera("Telefono: "+telefonoCliente_Pen);
+            Ticket.AddSubCabecera(Ticket.DarEspacio());
+            Ticket.AddSubCabecera(Ticket.DibujarLinea(29));
+            Ticket.AddSubCabecera(Ticket.DarEspacio());
+        }
         
         int filas = 0;
         filas = vv.tbllis.getRowCount();
@@ -3126,7 +3446,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         java.text.SimpleDateFormat sdf_T = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         fec_reg = sdf.format(dt);
         fech_reg_Tick = sdf_T.format(dt);
-        sta_ven = 1;
+        sta_ven = estatusVenta;
         ref_ven = null;
         
         if( tip_ven == 0 ){
@@ -3175,6 +3495,8 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         vm.setSubtot_ven(subtot_ven);
         vm.setPagoInicialCredito(pagoInicialCredito);
         vm.setIdCliente(idCliente);
+        vm.setNombreCliente_P(nombreCliente_Pen);
+        vm.setTelefonoCliente_P(telefonoCliente_Pen);
         
         if(vm.GuardarVentaOrden()){
             return 1;
@@ -3463,6 +3785,81 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         
     }
     
+    public void CargarVentasPendientes(){
+        DefaultTableModel modelt = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               return false;
+            }
+        };
+        
+        String folioBusqueda;
+        folioBusqueda = "";
+        
+        int id_ven = 0;
+        String fol_ven = folioBusqueda;
+        double tot_ven = 0;
+        int can_ven = 0;
+        int des_ven = 0;
+        
+        int met_pag = 0;
+        
+        int tip_ven = 0;
+        String fec_reg = null;
+        int sta_ven = 0;
+        String ref_ven = null;
+        double subtot_ven = 0;
+        String fecha_can = null;
+        
+        id_ven = -13;
+        tip_ven = 0;
+        ref_ven = "2";
+        Date fecha_de;
+        Date fecha_al;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        fecha_de = vv.fechaDe_pen.getDate();
+        fecha_al = vv.fechaAl_pen.getDate();
+        fecha_can = sdf.format(fecha_de)+" 00:00:00";
+        fec_reg = sdf.format(fecha_al)+" 23:59:59";
+        
+        
+        vm.setId_ven(id_ven);
+        vm.setFol_ven(fol_ven);
+        vm.setTot_ven(tot_ven);
+        vm.setCan_ven(can_ven);
+        vm.setDes_ven(des_ven);
+        vm.setMet_pag(met_pag);
+        vm.setTip_ven(tip_ven);
+        vm.setFec_reg(fec_reg);
+        vm.setSta_ven(sta_ven);
+        vm.setRef_ven(ref_ven);
+        vm.setSubtot_ven(subtot_ven);
+        vm.setFec_cancela(fecha_can);
+        
+        modelt = vm.CargarOrdenesServicio();
+        
+        /*BigDecimal efectivo = vm.getTotalEfectivo();
+        BigDecimal tarjeta = vm.getTotalTarjeta();
+        BigDecimal transferencia = vm.getTotalTransferencia();
+        
+        vv.lblTot_Efectivo.setText("$ " + efectivo.toString());
+        vv.lblTot_Tarjeta.setText("$ " + tarjeta.toString());
+        vv.lblTot_Transferencia.setText("$ " + transferencia.toString());*/
+        
+        vv.tbllis_pen.setModel(modelt);
+        
+        vv.tbllis_pen.getColumnModel().getColumn(0).setMaxWidth(0);
+        vv.tbllis_pen.getColumnModel().getColumn(0).setMinWidth(0);
+        vv.tbllis_pen.getColumnModel().getColumn(0).setPreferredWidth(0);
+        /*vv.tbllis_pen.getColumnModel().getColumn(11).setMaxWidth(0);
+        vv.tbllis_pen.getColumnModel().getColumn(11).setMinWidth(0);
+        vv.tbllis_pen.getColumnModel().getColumn(11).setPreferredWidth(0);*/
+        centrar.setHorizontalAlignment(SwingConstants.CENTER);//.LEFT .RIGHT .CENTER
+        for (int i = 0; i <= 10; i++) {
+            vv.tbllis_pen.getColumnModel().getColumn(i).setCellRenderer(centrar);
+        }
+    }
+    
     /*SI se usa*/ public int ActualizarEstatus_VE(int filaVenCan){
         int id_ven = 0;
         String fol_ven = null;
@@ -3498,6 +3895,64 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         vm.setSubtot_ven(subtot_ven);
         vm.setFec_cancela(fec_cancela);
         vm.setUsuarioRegistra(usuarioLogeado);
+        
+        if(vm.GuardarVentaOrden()){
+            return 1;
+        }
+        return 0;
+    }
+    
+    /*SI se usa*/ public int ActualizarEstatus_PEN(int filaVenCan){
+        int id_ven = 0;
+        String fol_ven = null;
+        double tot_ven = 0;
+        int can_ven = 0;
+        int des_ven = 0;
+        int met_pag = 0;
+        int tip_ven = 0;
+        String fec_reg = null;
+        int sta_ven = 0;
+        String ref_ven = null;
+        double subtot_ven = 0;
+        String fec_cancela = null;
+        
+        id_ven = -5;
+        fol_ven = vv.tbllis_pen.getValueAt(filaVenCan, 1).toString();
+        can_ven = Integer.parseInt(vv.tbllis_pen.getValueAt(filaVenCan, 0).toString());
+        sta_ven = 0;
+        java.util.Date dt = new java.util.Date();
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        fec_cancela = sdf.format(dt);
+        
+        vm.setId_ven(id_ven);
+        vm.setFol_ven(fol_ven);
+        vm.setTot_ven(tot_ven);
+        vm.setCan_ven(can_ven);
+        vm.setDes_ven(des_ven);
+        vm.setMet_pag(met_pag);
+        vm.setTip_ven(tip_ven);
+        vm.setFec_reg(fec_reg);
+        vm.setSta_ven(sta_ven);
+        vm.setRef_ven(ref_ven);
+        vm.setSubtot_ven(subtot_ven);
+        vm.setFec_cancela(fec_cancela);
+        vm.setUsuarioRegistra(usuarioLogeado);
+        
+        if(vm.GuardarVentaOrden()){
+            return 1;
+        }
+        return 0;
+    }
+    
+    public int CompletarVentaPendiente(int filaVenCan){
+        int id_ven = 0;
+        String fol_ven = null;
+        
+        id_ven = -12;
+        fol_ven = vv.tbllis_pen.getValueAt(filaVenCan, 1).toString();
+        
+        vm.setId_ven(id_ven);
+        vm.setFol_ven(fol_ven);
         
         if(vm.GuardarVentaOrden()){
             return 1;
@@ -3557,6 +4012,55 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
             pm.GuardarProductos();
         }
         
+    }
+    
+    public void RegresarStockVenta_PEN(int filaVenCan){
+        DefaultTableModel modelt = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               return false;
+            }
+        };
+        
+        int id = -2;
+        double tot = 0;
+        int cant = 0;
+        int id_pro = 0;
+        String folio = null;
+        
+        folio = vv.tbllis_pen.getValueAt(filaVenCan, 1).toString();
+        
+        System.out.println("Folio: " + folio);
+        
+        vm.setId(id);
+        vm.setTot(tot);
+        vm.setCan(cant);
+        vm.setId_pro(id_pro);
+        vm.setFol_dven(folio);
+        
+        modelt = vm.CargarDetalleVenta();
+        
+        int filasModel = 0;
+        filasModel  = modelt.getRowCount();
+        System.out.println("Filas: "+filasModel);
+        for (int i = 0; i < filasModel; i++) {
+            int id_dven = 0;
+            int id_Pro = 0;
+            double cantD = 0;
+            id_dven = Integer.parseInt(modelt.getValueAt(i, 0).toString());
+            id_Pro = Integer.parseInt(modelt.getValueAt(i, 3).toString());
+            cantD = Double.parseDouble(modelt.getValueAt(i, 2).toString());
+            pm.setId(-7);
+            pm.setCod(null);
+            pm.setNom(null);
+            pm.setSa(cantD);
+            pm.setSm(id_Pro);
+            pm.setSx(id_dven);
+            pm.setPre(0);
+            pm.setCat(null);
+            pm.setEst(0);
+            pm.GuardarProductos();
+        }
     }
     
     public void CargarOrdenCancelar(){
@@ -4379,6 +4883,10 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         vv.tblBuscarProductos.getColumnModel().getColumn(0).setMaxWidth(0);
         vv.tblBuscarProductos.getColumnModel().getColumn(0).setMinWidth(0);
         vv.tblBuscarProductos.getColumnModel().getColumn(0).setPreferredWidth(0);//ID
+        
+        vv.tblBuscarProductos.getColumnModel().getColumn(5).setMaxWidth(0);
+        vv.tblBuscarProductos.getColumnModel().getColumn(5).setMinWidth(0);
+        vv.tblBuscarProductos.getColumnModel().getColumn(5).setPreferredWidth(0);//ID CAT
         /*vv.tblBuscarProductos.getColumnModel().getColumn(2).setMaxWidth(200);
         vv.tblBuscarProductos.getColumnModel().getColumn(2).setMinWidth(200);
         vv.tblBuscarProductos.getColumnModel().getColumn(2).setPreferredWidth(200);//NOM*/
@@ -4432,6 +4940,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
             String nombre = null;
             String precio = null;
             double sActual = 0;
+            int idCat = 0;
 
             // Producto
             id = Integer.parseInt(vv.tblBuscarProductos.getValueAt(filaSeleccionada, 0).toString());
@@ -4439,6 +4948,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
             nombre = vv.tblBuscarProductos.getValueAt(filaSeleccionada, 2).toString();
             precio = vv.tblBuscarProductos.getValueAt(filaSeleccionada, 4).toString();
             sActual = Double.parseDouble(vv.tblBuscarProductos.getValueAt(filaSeleccionada, 3).toString());
+            idCat = Integer.parseInt(vv.tblBuscarProductos.getValueAt(filaSeleccionada, 5).toString());
 
             existe = VerificarExisteTabla(codigo);
 
@@ -4446,7 +4956,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                 if( sActual < 0){
                     JOptionPane.showMessageDialog(vv, "<html>El producto <b>" + nombre + "</b> no cuenta con stock.</html>");
                 }
-                modeltLis.addRow(new Object[]{id,codigo,nombre,precio,1,""});
+                modeltLis.addRow(new Object[]{id,codigo,nombre,precio,1,"",idCat});
                 vv.txtbus.setText("");
             }else{
                 if( sActual < existe+1){
@@ -4599,6 +5109,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
             com.setPrecio(Double.parseDouble(vv.tbllis.getValueAt(i, 3).toString()));
             com.setCantidad(Double.parseDouble(vv.tbllis.getValueAt(i, 4).toString()));
             com.setSubtotal(Double.parseDouble(vv.tbllis.getValueAt(i, 5).toString()));
+            com.setId_cot(Integer.parseInt(vv.tbllis.getValueAt(i, 6).toString()));
             com.setConsecutivo(i+1);
             com.setNombreCotizacion(nombreCotizacion);
             
@@ -4740,7 +5251,8 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                 modelt.getValueAt(i, 2),
                 modelt.getValueAt(i, 3),
                 modelt.getValueAt(i, 4),
-                ""
+                "",
+                modelt.getValueAt(i, 10),
             });
         }
         
@@ -4997,9 +5509,9 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                     vv.c_tipoventa_ve.setText("CREDITO");
                 }
                 
-                vv.c_cliente_ve.setText( modelo.getValueAt(i, 16).toString() );
+                vv.c_cliente_ve.setText( modelo.getValueAt(i, 18).toString() );
                 
-                vv.c_usuarioregistra_ve.setText( modelo.getValueAt(i, 15).toString() );
+                vv.c_usuarioregistra_ve.setText( modelo.getValueAt(i, 17).toString() );
                 
                 CargarConsultaDetalle2(vv.c_folio_ve.getText());
 
@@ -5033,6 +5545,88 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
                 vv.btn_reimprimir_ticket.setEnabled(true);
                 vv.btnDevolverProducto.setEnabled(true);
             }*/
+            abrirModalDetalleVenta();
+        }
+    }
+    
+    public void CargarModalDetalleVenta_Pen(){
+        int fila = 0;
+        fila = vv.tbllis_pen.getSelectedRow();
+        if(fila < 0){
+            JOptionPane.showMessageDialog(vv, "Seleccione un Registro");
+        }else{
+
+            // LIMPIAR DIALOG
+            vv.c_folio_ve.setText("");
+            vv.c_fechaventa_ve.setText("");
+            vv.c_fechacancelado_ve.setText("");
+            vv.c_estatus_ve.setText("");
+            vv.c_subtotal_ve.setText("");
+            vv.c_descuento_ve.setText("");
+            vv.c_total_ve.setText("");
+            vv.c_metodopago_ve.setText("");
+            vv.c_usuarioregistra_ve.setText("");
+            vv.c_tipoventa_ve.setText("");
+            int c_fila = 0;
+            c_fila = vv.c_tbllis_ve.getSelectedRow();
+            if(c_fila == -1){
+
+            }else{
+                for (int i = 0; i < fila; i++) {
+                    //c_modeltLisVE.removeRow(0);
+                }
+            }
+
+            DefaultTableModel modelo = vm.ConsultarVentaFolio(vv.tbllis_pen.getValueAt(fila, 1).toString());
+            
+            // Si deseas obtener todas las filas y columnas de la tabla:
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                vv.c_folio_ve.setText(modelo.getValueAt(i, 1).toString());
+                vv.c_fechaventa_ve.setText(modelo.getValueAt(i, 8).toString());
+                if(modelo.getValueAt(i, 9).toString().equals("1")){
+                    vv.c_estatus_ve.setText("Realizada");
+                }else if(modelo.getValueAt(i, 9).toString().equals("2")){
+                    vv.c_estatus_ve.setText("Pendiente");
+                }else{
+                    vv.c_estatus_ve.setText("Cancelada");
+                }
+                vv.c_subtotal_ve.setText(modelo.getValueAt(i, 10).toString());
+                vv.c_descuento_ve.setText(modelo.getValueAt(i, 4).toString());
+                vv.c_total_ve.setText(modelo.getValueAt(i, 2).toString());
+                if(modelo.getValueAt(i, 11) == null){
+                    vv.c_fechacancelado_ve.setText("");
+                }else{
+                    vv.c_fechacancelado_ve.setText(modelo.getValueAt(i, 11).toString());
+                }
+                
+                if( "0".equals(modelo.getValueAt(i, 5).toString()) ){
+                    vv.c_metodopago_ve.setText("EFECTIVO");
+                }else if( "1".equals(modelo.getValueAt(i, 5).toString()) ){
+                    vv.c_metodopago_ve.setText("TARJETA");
+                }else if( "2".equals(modelo.getValueAt(i, 5).toString()) ){
+                    vv.c_metodopago_ve.setText("TRANSFERENCIA");
+                }
+                
+                if( "0".equals(modelo.getValueAt(i, 14).toString()) ){
+                    vv.c_tipoventa_ve.setText("CONTADO");
+                }else{
+                    vv.c_tipoventa_ve.setText("CREDITO");
+                }
+                
+                vv.c_cliente_ve.setText( modelo.getValueAt(i, 18).toString() );
+                
+                vv.c_usuarioregistra_ve.setText( modelo.getValueAt(i, 17).toString() );
+                
+                CargarConsultaDetalle2(vv.c_folio_ve.getText());
+
+                if(modelo.getValueAt(i, 9).toString().equals("0")){
+                    vv.btn_reimprimir_ticket.setEnabled(false);
+                    vv.btnDevolverProducto.setEnabled(false);
+                }else{
+                    vv.btn_reimprimir_ticket.setEnabled(true);
+                    vv.btnDevolverProducto.setEnabled(true);
+                }
+            }
             abrirModalDetalleVenta();
         }
     }
@@ -5603,6 +6197,39 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         CargarMovimientosCreditos(idCliente);
         cerrarModal(vv.dAbonosCreditos);
             
+    }
+    
+    public double calcularTotalConDescuento(int fPago) {
+        DefaultTableModel modelo = (DefaultTableModel) vv.tbllis.getModel();
+        int totalFilas = modelo.getRowCount();
+
+        double nuevoTotalGeneral = 0.0;
+
+        // 1. Cargamos el mapa de descuentos en RAM una sola vez (¡Súper rápido!)
+        java.util.Map<Integer, Double> deptosConDescuento = cpm.obtenerDescuentosDepartamentos();
+
+        for (int i = 0; i < totalFilas; i++) {
+            double cantidad = Double.parseDouble(modelo.getValueAt(i, 4).toString());
+            double precioUnitario = Double.parseDouble(modelo.getValueAt(i, 3).toString());
+            int idDepartamento = Integer.parseInt(modelo.getValueAt(i, 6).toString()); // Columna del depto
+
+            double subtotalLinea = cantidad * precioUnitario;
+            
+            if( fPago != 1 ){
+
+                // 2. Verificamos de forma instantánea si el departamento tiene descuento registrado
+                if (deptosConDescuento.containsKey(idDepartamento)) {
+                    double porcentajeDescuento = deptosConDescuento.get(idDepartamento);
+                    double descuento = subtotalLinea * (porcentajeDescuento / 100.0);
+                    subtotalLinea -= descuento; // Se aplica el descuento a la línea
+                }
+                
+            }
+
+            nuevoTotalGeneral += subtotalLinea;
+        }
+
+        return nuevoTotalGeneral;
     }
     
 }

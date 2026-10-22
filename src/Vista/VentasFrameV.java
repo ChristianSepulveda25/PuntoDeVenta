@@ -239,6 +239,7 @@ public class VentasFrameV extends javax.swing.JFrame {
         cmbFormaPago = new javax.swing.JComboBox<>();
         jLabel63 = new javax.swing.JLabel();
         cmbCliente = new javax.swing.JComboBox<>();
+        btncobrarpendiente = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel36 = new javax.swing.JLabel();
         cmbClienteCredito = new javax.swing.JComboBox<>();
@@ -330,6 +331,19 @@ public class VentasFrameV extends javax.swing.JFrame {
         btnRegistroAbonos = new javax.swing.JButton();
         btnCancelarAbono = new javax.swing.JButton();
         btnImprimirAbono = new javax.swing.JButton();
+        pendientes = new javax.swing.JPanel();
+        btnCompletarVenta_pen = new javax.swing.JButton();
+        pnlcan5 = new javax.swing.JPanel();
+        jLabel76 = new javax.swing.JLabel();
+        btnbus_pen = new javax.swing.JButton();
+        jScrollPane12 = new javax.swing.JScrollPane();
+        tbllis_pen = new javax.swing.JTable();
+        fechaDe_pen = new com.toedter.calendar.JDateChooser();
+        fechaAl_pen = new com.toedter.calendar.JDateChooser();
+        btnexportar_pen = new javax.swing.JButton();
+        btnsalir_pen = new javax.swing.JButton();
+        btnconsultar_pen = new javax.swing.JButton();
+        btncancelar_pen = new javax.swing.JButton();
 
         dConsultarOS.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         dConsultarOS.setTitle("Consulta de Órdenes de Servicio");
@@ -1811,6 +1825,10 @@ public class VentasFrameV extends javax.swing.JFrame {
 
         cmbCliente.setFont(new java.awt.Font("Arial Black", 0, 18)); // NOI18N
 
+        btncobrarpendiente.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btncobrarpendiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/catalogos.png"))); // NOI18N
+        btncobrarpendiente.setText("Pendiente");
+
         javax.swing.GroupLayout pnlefeLayout = new javax.swing.GroupLayout(pnlefe);
         pnlefe.setLayout(pnlefeLayout);
         pnlefeLayout.setHorizontalGroup(
@@ -1820,7 +1838,7 @@ public class VentasFrameV extends javax.swing.JFrame {
                 .addGroup(pnlefeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlefeLayout.createSequentialGroup()
                         .addComponent(jLabel29)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(pnlefeLayout.createSequentialGroup()
                         .addGroup(pnlefeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtcambio)
@@ -1838,12 +1856,16 @@ public class VentasFrameV extends javax.swing.JFrame {
                                     .addComponent(jLabel27))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addGroup(pnlefeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btncobrarconticket, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel35)
-                            .addComponent(cmbFormaPago, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel63)
-                            .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                            .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlefeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(pnlefeLayout.createSequentialGroup()
+                                    .addComponent(btncobrarconticket, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btncobrarpendiente))
+                                .addComponent(cmbFormaPago, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(14, 14, 14))))
         );
         pnlefeLayout.setVerticalGroup(
             pnlefeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1887,7 +1909,8 @@ public class VentasFrameV extends javax.swing.JFrame {
                         .addGap(46, 46, 46))
                     .addGroup(pnlefeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtcambio, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btncobrarconticket, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btncobrarconticket, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btncobrarpendiente, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(17, 17, 17))
         );
 
@@ -2270,17 +2293,16 @@ public class VentasFrameV extends javax.swing.JFrame {
             .addGroup(pnlcan1Layout.createSequentialGroup()
                 .addGroup(pnlcan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmbfiltro_metodopago1, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                    .addGroup(pnlcan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(cmbest_ven, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                        .addGroup(pnlcan1Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jLabel14))
-                        .addGroup(pnlcan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnbus_ven, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                            .addComponent(btnexportar, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                        .addComponent(fechaDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(fechaAl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtTextoBus_Cancelar)))
+                    .addComponent(cmbest_ven, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                    .addGroup(pnlcan1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel14))
+                    .addGroup(pnlcan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnbus_ven, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(btnexportar, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+                    .addComponent(fechaDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fechaAl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtTextoBus_Cancelar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE)
                 .addContainerGap())
@@ -2721,6 +2743,130 @@ public class VentasFrameV extends javax.swing.JFrame {
 
         pesprincipal.addTab("Créditos", jPanel6);
 
+        btnCompletarVenta_pen.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnCompletarVenta_pen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/accept.png"))); // NOI18N
+        btnCompletarVenta_pen.setText("Completar Venta");
+        btnCompletarVenta_pen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompletarVenta_penActionPerformed(evt);
+            }
+        });
+
+        pnlcan5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Listado", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Black", 2, 18))); // NOI18N
+
+        jLabel76.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        jLabel76.setText("Buscar:");
+
+        btnbus_pen.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnbus_pen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        btnbus_pen.setText("Buscar");
+
+        tbllis_pen.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        tbllis_pen.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        tbllis_pen.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane12.setViewportView(tbllis_pen);
+
+        fechaDe_pen.setDateFormatString("dd/MM/yyyy");
+        fechaDe_pen.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+
+        fechaAl_pen.setDateFormatString("dd/MM/yyyy");
+        fechaAl_pen.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+
+        btnexportar_pen.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnexportar_pen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
+        btnexportar_pen.setText("Exportar a Excel");
+
+        javax.swing.GroupLayout pnlcan5Layout = new javax.swing.GroupLayout(pnlcan5);
+        pnlcan5.setLayout(pnlcan5Layout);
+        pnlcan5Layout.setHorizontalGroup(
+            pnlcan5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlcan5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlcan5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane12)
+                    .addGroup(pnlcan5Layout.createSequentialGroup()
+                        .addComponent(jLabel76)
+                        .addGap(18, 18, 18)
+                        .addComponent(fechaDe_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fechaAl_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 476, Short.MAX_VALUE)
+                        .addComponent(btnbus_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnexportar_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        pnlcan5Layout.setVerticalGroup(
+            pnlcan5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlcan5Layout.createSequentialGroup()
+                .addGroup(pnlcan5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pnlcan5Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel76))
+                    .addGroup(pnlcan5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnbus_pen, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                        .addComponent(btnexportar_pen, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+                    .addComponent(fechaDe_pen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fechaAl_pen, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 964, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        btnsalir_pen.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnsalir_pen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/salir.png"))); // NOI18N
+        btnsalir_pen.setText("Salir");
+
+        btnconsultar_pen.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnconsultar_pen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        btnconsultar_pen.setText("Consultar");
+
+        btncancelar_pen.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btncancelar_pen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
+        btncancelar_pen.setText("Cancelar");
+
+        javax.swing.GroupLayout pendientesLayout = new javax.swing.GroupLayout(pendientes);
+        pendientes.setLayout(pendientesLayout);
+        pendientesLayout.setHorizontalGroup(
+            pendientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pendientesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pendientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlcan5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pendientesLayout.createSequentialGroup()
+                        .addComponent(btnsalir_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCompletarVenta_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnconsultar_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btncancelar_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        pendientesLayout.setVerticalGroup(
+            pendientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pendientesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlcan5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(pendientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pendientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnsalir_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnconsultar_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btncancelar_pen, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCompletarVenta_pen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        pesprincipal.addTab("Pendientes", pendientes);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -2756,6 +2902,10 @@ public class VentasFrameV extends javax.swing.JFrame {
     private void btnCerrarCotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarCotActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCerrarCotActionPerformed
+
+    private void btnCompletarVenta_penActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompletarVenta_penActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCompletarVenta_penActionPerformed
 
     /**
      * @param args the command line arguments
@@ -2812,6 +2962,7 @@ public class VentasFrameV extends javax.swing.JFrame {
     public javax.swing.JButton btnCancelar_ESE;
     public javax.swing.JButton btnCerrarCot;
     public javax.swing.JButton btnCobrarCredito;
+    public javax.swing.JButton btnCompletarVenta_pen;
     public javax.swing.JButton btnCotizacion;
     public javax.swing.JButton btnDescuento;
     public javax.swing.JButton btnDevolverDetalle;
@@ -2848,16 +2999,22 @@ public class VentasFrameV extends javax.swing.JFrame {
     public javax.swing.JButton btn_guardar_RA;
     public javax.swing.JButton btn_reimprimir_ticket;
     public javax.swing.JButton btnact;
+    public javax.swing.JButton btnbus_pen;
     public javax.swing.JButton btnbus_ven;
+    public javax.swing.JButton btncancelar_pen;
     public javax.swing.JButton btncancelar_ven;
     public javax.swing.JButton btncobrar;
     public javax.swing.JButton btncobrarconticket;
+    public javax.swing.JButton btncobrarpendiente;
+    public javax.swing.JButton btnconsultar_pen;
     public javax.swing.JButton btnconsultar_ven;
     public javax.swing.JButton btneli;
     public javax.swing.JButton btnexportar;
+    public javax.swing.JButton btnexportar_pen;
     public javax.swing.JButton btnmas;
     public javax.swing.JButton btnmen;
     public javax.swing.JButton btnsalir;
+    public javax.swing.JButton btnsalir_pen;
     public javax.swing.JButton btnsalir_ven;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
@@ -2917,10 +3074,12 @@ public class VentasFrameV extends javax.swing.JFrame {
     public com.toedter.calendar.JDateChooser fechaAlCreditos;
     public com.toedter.calendar.JDateChooser fechaAlCxC;
     public com.toedter.calendar.JDateChooser fechaAlDetalle;
+    public com.toedter.calendar.JDateChooser fechaAl_pen;
     public com.toedter.calendar.JDateChooser fechaDe;
     public com.toedter.calendar.JDateChooser fechaDeCreditos;
     public com.toedter.calendar.JDateChooser fechaDeCxC;
     public com.toedter.calendar.JDateChooser fechaDeDetalle;
+    public com.toedter.calendar.JDateChooser fechaDe_pen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2994,6 +3153,7 @@ public class VentasFrameV extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel73;
     private javax.swing.JLabel jLabel74;
     private javax.swing.JLabel jLabel75;
+    private javax.swing.JLabel jLabel76;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -3006,6 +3166,7 @@ public class VentasFrameV extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
+    private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane14;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -3036,6 +3197,7 @@ public class VentasFrameV extends javax.swing.JFrame {
     public javax.swing.JLabel lblTot_Transferencia;
     public javax.swing.JLabel lblcan;
     public javax.swing.JLabel lbltot;
+    private javax.swing.JPanel pendientes;
     public javax.swing.JTabbedPane pesAplicarDescuento;
     public static javax.swing.JTabbedPane pescobrar;
     public static javax.swing.JTabbedPane pesprincipal;
@@ -3044,6 +3206,7 @@ public class VentasFrameV extends javax.swing.JFrame {
     private javax.swing.JPanel pnlcan2;
     private javax.swing.JPanel pnlcan3;
     private javax.swing.JPanel pnlcan4;
+    private javax.swing.JPanel pnlcan5;
     public javax.swing.JPanel pnlcobro;
     public javax.swing.JPanel pnlefe;
     public javax.swing.JSpinner spinMonto_ESE;
@@ -3055,6 +3218,7 @@ public class VentasFrameV extends javax.swing.JFrame {
     public javax.swing.JTable tbllisCreditosMovimientos;
     public javax.swing.JTable tbllisCxC;
     public javax.swing.JTable tbllisDetalle;
+    public javax.swing.JTable tbllis_pen;
     public javax.swing.JTable tbllis_ven;
     public javax.swing.JTextField txtBuscarProductos;
     public javax.swing.JTextArea txtComentarios_ESE;

@@ -26,6 +26,7 @@ public class CotizacionM {
     public int consecutivo = 0;
     public String nombreCotizacion = null;
     public String fecha = null;
+    public int id_cot = 0;
 
     public int getParam() {
         return param;
@@ -106,6 +107,14 @@ public class CotizacionM {
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
+
+    public int getId_cot() {
+        return id_cot;
+    }
+
+    public void setId_cot(int id_cot) {
+        this.id_cot = id_cot;
+    }
     
     public boolean GuardarCotizacion(){
        
@@ -113,7 +122,7 @@ public class CotizacionM {
        java.sql.Connection cn = cc.getConexion();
        
        try {
-            CallableStatement proc = cn.prepareCall("CALL GuardarCotizacion(?,?,?,?,?,?,?,?,?,?)");
+            CallableStatement proc = cn.prepareCall("CALL GuardarCotizacion(?,?,?,?,?,?,?,?,?,?,?)");
             proc.setInt(1, getParam());
             proc.setInt(2, getId());
             proc.setString(3, getCodigo());
@@ -124,6 +133,7 @@ public class CotizacionM {
             proc.setInt(8, getConsecutivo());
             proc.setString(9, getNombreCotizacion());
             proc.setString(10, getFecha());
+            proc.setInt(11, getId_cot());
             proc.execute();
             
             return true;
@@ -150,7 +160,7 @@ public class CotizacionM {
         };
 
         // Consulta SQL con parámetros
-        String sql = "{CALL GuardarCotizacion(?,?,?,?,?,?,?,?,?,?)}";
+        String sql = "{CALL GuardarCotizacion(?,?,?,?,?,?,?,?,?,?,?)}";
 
         try {
             // Crear PreparedStatement
@@ -167,6 +177,7 @@ public class CotizacionM {
             stmt.setInt(8, getConsecutivo());
             stmt.setString(9, getNombreCotizacion());
             stmt.setString(10, getFecha());
+            stmt.setInt(11, getId_cot());
 
             // Ejecutar la consulta
             ResultSet rs = stmt.executeQuery();
@@ -189,7 +200,7 @@ public class CotizacionM {
                 modelocp.addRow(fila);
             }
         } catch (SQLException sqlex) {
-            System.out.println("Problema CargarDatos " + sqlex.getMessage() + "/" + sqlex.getErrorCode() + " Productos");
+            System.out.println("Problema CargarDatos " + sqlex.getMessage() + "/" + sqlex.getErrorCode() + " Cotizaciones");
         } finally {
             cn.close();
         }

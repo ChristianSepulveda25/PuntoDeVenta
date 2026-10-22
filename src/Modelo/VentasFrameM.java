@@ -40,6 +40,8 @@ public class VentasFrameM {
     public double pagoInicialCredito = 0;
     public int idClienteCredito = 0;
     public int idCliente = 0;
+    public String nombreCliente_P = null;
+    public String telefonoCliente_P = null;
     ///// DETALLE VENTA
     public int id = 0;
     public double tot = 0;
@@ -226,6 +228,22 @@ public class VentasFrameM {
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
     }
+
+    public String getNombreCliente_P() {
+        return nombreCliente_P;
+    }
+
+    public void setNombreCliente_P(String nombreCliente_P) {
+        this.nombreCliente_P = nombreCliente_P;
+    }
+
+    public String getTelefonoCliente_P() {
+        return telefonoCliente_P;
+    }
+
+    public void setTelefonoCliente_P(String telefonoCliente_P) {
+        this.telefonoCliente_P = telefonoCliente_P;
+    }
     
     ///////// DETALLE VENTA
 
@@ -283,7 +301,7 @@ public class VentasFrameM {
        java.sql.Connection cn = cc.getConexion();
        
        try {
-            CallableStatement proc = cn.prepareCall("{CALL GuardarVentaOrden(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+            CallableStatement proc = cn.prepareCall("{CALL GuardarVentaOrden(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
             proc.setInt(1, getId_ven());
             proc.setString(2, getFol_ven());
             proc.setDouble(3, getTot_ven());
@@ -301,6 +319,8 @@ public class VentasFrameM {
             proc.setDouble(15, getPagoInicialCredito());
             proc.setInt(16, getIdClienteCredito());
             proc.setInt(17, getIdCliente());
+            proc.setString(18, getNombreCliente_P());
+            proc.setString(19, getTelefonoCliente_P());
             
             // System.out.println(proc);
             
@@ -405,7 +425,7 @@ public class VentasFrameM {
         try {
 
             CallableStatement proc = cn.prepareCall(
-                "CALL GuardarVentaOrden(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                "CALL GuardarVentaOrden(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             );
 
             proc.setInt(1, getId_ven());
@@ -427,6 +447,8 @@ public class VentasFrameM {
             proc.setDouble(15, getPagoInicialCredito());
             proc.setInt(16, getIdClienteCredito());
             proc.setInt(17, getIdCliente());
+            proc.setString(18, getNombreCliente_P());
+            proc.setString(19, getTelefonoCliente_P());
 
             // Ejecutamos el procedimiento
             boolean hayResultado = proc.execute();

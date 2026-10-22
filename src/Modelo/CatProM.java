@@ -22,6 +22,7 @@ public class CatProM {
     public String con = null;
     public String nom = null;
     public int est = 0;
+    public int porcentaje = 0;
 
     public int getId() {
         return id;
@@ -54,6 +55,14 @@ public class CatProM {
     public void setEst(int est) {
         this.est = est;
     }
+
+    public int getPorcentaje() {
+        return porcentaje;
+    }
+
+    public void setPorcentaje(int porcentaje) {
+        this.porcentaje = porcentaje;
+    }
     
     public boolean GuardarCatPro(){
        
@@ -61,11 +70,12 @@ public class CatProM {
        java.sql.Connection cn = cc.getConexion();
        
        try {
-            CallableStatement proc = cn.prepareCall("CALL GuardarCatPro(?,?,?,?)");
+            CallableStatement proc = cn.prepareCall("CALL GuardarCatPro(?,?,?,?,?)");
             proc.setInt(1, getId());
             proc.setString(2, getCon());
             proc.setString(3, getNom());
             proc.setInt(4, getEst());
+            proc.setInt(5, getPorcentaje());
             
             proc.execute();
             
@@ -96,7 +106,13 @@ public class CatProM {
             
             Statement smt = cn.createStatement();
             ResultSet rs = null;
-            rs = smt.executeQuery("CALL GuardarCatPro(" + getId() + ","+getCon()+","+getNom()+","+getEst()+");");
+            rs = smt.executeQuery("CALL GuardarCatPro(" 
+                + getId() + "," 
+                + getCon() + "," 
+                + getNom() + "," 
+                + getEst() + "," 
+                + getPorcentaje()+ ");"
+            );
             
             ResultSetMetaData md = rs.getMetaData();
             int columnas= md.getColumnCount();
@@ -120,6 +136,42 @@ public class CatProM {
         }
         
         return modelocp;
+    }
+    
+    public java.util.Map<Integer, Double> obtenerDescuentosDepartamentos() {
+        java.util.Map<Integer, Double> descuentosMap = new java.util.HashMap<>();
+        Conexion cc = new Conexion();
+        Connection cn = cc.getConexion();
+
+        try {
+            // Usamos tu procedimiento almacenado con un ID de control (ej. -1 para consultar)
+            CallableStatement proc = cn.prepareCall("CALL GuardarCatPro(?,?,?,?,?)");
+            proc.setInt(1, -6);      // ID de control para la consulta (ej. -1)
+            proc.setString(2, "");   // Parámetros de relleno que no se usan en esta consulta
+            proc.setString(3, "");
+            proc.setInt(4, 0);
+            proc.setInt(5, 0);
+
+            ResultSet rs = proc.executeQuery();
+
+            while (rs.next()) {
+                // Suponiendo que tu consulta regresa el ID del departamento y su porcentaje de descuento
+                int idDepartamento = rs.getInt("id_catpro"); // O el nombre de tu columna ID
+                double porcentajeDescuento = rs.getDouble("porcentaje_desc"); // O la columna de descuento
+
+                descuentosMap.put(idDepartamento, porcentajeDescuento);
+            }
+        } catch (SQLException sqlex) {
+            System.out.println("Error al obtener descuentos de departamentos: " + sqlex.getMessage());
+        } finally {
+            try {
+                if (cn != null) cn.close();
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+
+        return descuentosMap;
     }
     
 }

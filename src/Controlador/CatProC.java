@@ -47,6 +47,7 @@ public class CatProC implements ActionListener, KeyListener {
         cpv.txtid.setVisible(false);
         CargarCatPro();
         cpv.txtnom.setEnabled(false);
+        cpv.txtporcentaje.setEnabled(false);
         cpv.cmbest.setEnabled(false);
         cpv.btngua.setEnabled(false);
         cpv.btncan.setEnabled(false);
@@ -57,12 +58,16 @@ public class CatProC implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == cpv.btnnue){
             cpv.txtnom.setEnabled(true);
+            cpv.txtporcentaje.setEnabled(true);
             cpv.cmbest.setEnabled(true);
             cpv.btngua.setEnabled(true);
             cpv.btncan.setEnabled(true);
             cpv.btnnue.setEnabled(false);
             cpv.btnedi.setEnabled(false);
             cpv.btnsal.setEnabled(false);
+            
+            cpv.txtporcentaje.setText("0");
+            
             cpv.txtnom.requestFocus();
         }else if(e.getSource() == cpv.btngua){
             if(cpv.txtnom.getText().isEmpty()){
@@ -81,6 +86,7 @@ public class CatProC implements ActionListener, KeyListener {
                     }else if (reg == 1){
                         if(cpv.txtid.getText().isEmpty()){
                             cpv.txtnom.setText("");
+                            cpv.txtporcentaje.setText("0");
                             cpv.cmbest.setSelectedIndex(0);
                             cpv.txtid.setText("");
                             cpv.txtnom.requestFocus();
@@ -88,6 +94,7 @@ public class CatProC implements ActionListener, KeyListener {
                             JOptionPane.showMessageDialog(cpv, "Registro Guardado");
                         }else{
                             cpv.txtnom.setEnabled(false);
+                            cpv.txtporcentaje.setEnabled(false);
                             cpv.cmbest.setEnabled(false);
                             cpv.btngua.setEnabled(false);
                             cpv.btncan.setEnabled(false);
@@ -95,6 +102,7 @@ public class CatProC implements ActionListener, KeyListener {
                             cpv.btnedi.setEnabled(true);
                             cpv.btnsal.setEnabled(true);
                             cpv.txtnom.setText("");
+                            cpv.txtporcentaje.setText("0");
                             cpv.cmbest.setSelectedIndex(0);
                             cpv.txtid.setText("");
                             cpv.btnnue.requestFocus();
@@ -109,6 +117,7 @@ public class CatProC implements ActionListener, KeyListener {
             }
         }else if(e.getSource() == cpv.btncan){
             cpv.txtnom.setEnabled(false);
+            cpv.txtporcentaje.setEnabled(false);
             cpv.cmbest.setEnabled(false);
             cpv.btngua.setEnabled(false);
             cpv.btncan.setEnabled(false);
@@ -126,8 +135,10 @@ public class CatProC implements ActionListener, KeyListener {
             }else{
                 cpv.txtid.setText(cpv.tbllis.getValueAt(fila_s, 0).toString());
                 cpv.txtnom.setText(cpv.tbllis.getValueAt(fila_s, 1).toString());
-                cpv.cmbest.setSelectedItem(cpv.tbllis.getValueAt(fila_s, 2).toString());
+                cpv.txtporcentaje.setText(cpv.tbllis.getValueAt(fila_s, 2).toString());
+                cpv.cmbest.setSelectedItem(cpv.tbllis.getValueAt(fila_s, 3).toString());
                 cpv.txtnom.setEnabled(true);
+                cpv.txtporcentaje.setEnabled(true);
                 cpv.cmbest.setEnabled(true);
                 cpv.btngua.setEnabled(true);
                 cpv.btncan.setEnabled(true);
@@ -183,6 +194,7 @@ public class CatProC implements ActionListener, KeyListener {
         String cod = null;
         String nom = null;
         int est = 0;
+        int porcentaje = 0;
         
         if(!cpv.txtid.getText().isEmpty()){
             id = Integer.parseInt(cpv.txtid.getText());
@@ -197,9 +209,12 @@ public class CatProC implements ActionListener, KeyListener {
             est = 0;
         }
         
+        porcentaje = Integer.parseInt(cpv.txtporcentaje.getText());
+        
         cpm.setId(id);
         cpm.setCon(cod);
         cpm.setNom(nom);
+        cpm.setPorcentaje(porcentaje);
         cpm.setEst(est);
         
         if(cpm.GuardarCatPro()){
@@ -231,6 +246,9 @@ public class CatProC implements ActionListener, KeyListener {
         cpv.tbllis.getColumnModel().getColumn(2).setMaxWidth(100);
         cpv.tbllis.getColumnModel().getColumn(2).setMinWidth(100);
         cpv.tbllis.getColumnModel().getColumn(2).setPreferredWidth(100);
+        cpv.tbllis.getColumnModel().getColumn(3).setMaxWidth(100);
+        cpv.tbllis.getColumnModel().getColumn(3).setMinWidth(100);
+        cpv.tbllis.getColumnModel().getColumn(3).setPreferredWidth(100);
     }
     
 }
