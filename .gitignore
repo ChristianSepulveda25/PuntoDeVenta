@@ -4,8 +4,8 @@
 
 # Configuración privada específica de NetBeans para cada usuario
 /nbproject/private/
-/nbproject/build-impl.xml
-/nbproject/project.properties
+# /nbproject/build-impl.xml
+# /nbproject/project.properties
 
 # Archivos de caché o temporales del sistema
 .DS_Store
