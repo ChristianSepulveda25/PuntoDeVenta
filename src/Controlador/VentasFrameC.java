@@ -2636,7 +2636,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         modeltLis.addColumn("Subtotal");// 5
         modeltLis.addColumn("Id Cat");// 6
         vv.tbllis.setModel(modeltLis);
-        /*vv.tbllis.getColumnModel().getColumn(0).setMaxWidth(0);
+        vv.tbllis.getColumnModel().getColumn(0).setMaxWidth(0);
         vv.tbllis.getColumnModel().getColumn(0).setMinWidth(0);
         vv.tbllis.getColumnModel().getColumn(0).setPreferredWidth(0);
         vv.tbllis.getColumnModel().getColumn(1).setMaxWidth(150);
@@ -2653,7 +2653,7 @@ public class VentasFrameC implements ActionListener, KeyListener, MouseListener,
         vv.tbllis.getColumnModel().getColumn(5).setPreferredWidth(100);
         vv.tbllis.getColumnModel().getColumn(6).setMaxWidth(0);
         vv.tbllis.getColumnModel().getColumn(6).setMinWidth(0);
-        vv.tbllis.getColumnModel().getColumn(6).setPreferredWidth(0);*/
+        vv.tbllis.getColumnModel().getColumn(6).setPreferredWidth(0);
     }
     
     public String CargarProducto(String cod){
